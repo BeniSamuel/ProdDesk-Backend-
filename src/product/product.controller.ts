@@ -17,22 +17,25 @@ export class ProductController {
     @Get(":id")
     async getProduct( @Param('id') id: string) {
         const product = await this.productService.findProduct(Number(id));
-        return product ? { message: "Product Found", product: product} : { message: "Product not found!!"}
+        return product ? { message: "Product Found", product: product } : { message: "Product not found!!"}
     }
 
     // Creating Product
     @Post()
     async createProduct( @Body() productContent: ProductDto) {
         if ( productContent.name && productContent.description && productContent.price && productContent.quantity ) {
-            const newProduct = this.productService.createProduct(productContent);
-            return { message: "Product Created!!👌👌", product: newProduct};
+            const newProduct = await this.productService.createProduct(productContent);
+            return { message: "Product Created!!👌👌", newProduct };
+        }
+        else {
+            return { message: "Provide Complete inform"}
         }
     }
 
     // Deleting Product
     @Delete(":id")
-    deleteProduct ( @Param('id') id: string ) {
-        this.productService.deleteProduct(Number(id));
+    async deleteProduct ( @Param('id') id: string ) {
+        await this.productService.deleteProduct(Number(id));
         return { message: "Product Deleted"};
     }
 
@@ -40,7 +43,7 @@ export class ProductController {
     // creating function for updating the product id and product new content
     @Put(":id")
     async updateProduct ( @Param('id') id: string, productContent: ProductDto ) {
-        const newProduct = this.productService.updateProduct( Number(id), productContent);
-        return newProduct ? { message: "Product Updated 👌👌", product: newProduct} : { message: "No product found!"};
+        const newProduct = await this.productService.updateProduct( Number(id), productContent);
+        return newProduct ? { message: "Product Updated 👌👌", product: newProduct } : { message: "No product found!"};
     }
 }
